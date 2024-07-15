@@ -1,6 +1,6 @@
 package com.example.Reservas.controller;
 
-import com.example.Reservas.model.Reservation;
+import com.example.Reservas.dto.ReservationDTO;
 import com.example.Reservas.service.ReservationService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,9 +20,9 @@ public class ReservationController {
     private final ReservationService reservationService;
 
     @GetMapping
-    public ResponseEntity<List<Reservation>> listReservations() {
+    public ResponseEntity<List<ReservationDTO>> listReservations() {
         try {
-            List<Reservation> reservations = reservationService.listReservations().get();
+            List<ReservationDTO> reservations = reservationService.listReservations().get();
             return ResponseEntity.ok(reservations);
         } catch (InterruptedException | ExecutionException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -31,9 +31,9 @@ public class ReservationController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Reservation> createReservation(@RequestParam String roomId, @RequestParam LocalDateTime dateTime) {
+    public ResponseEntity<ReservationDTO> createReservation(@RequestParam String roomId, @RequestParam LocalDateTime dateTime) {
         try {
-            Reservation reservation = reservationService.createReservation(roomId, dateTime).get();
+            ReservationDTO reservation = reservationService.createReservation(roomId, dateTime).get();
             return ResponseEntity.ok(reservation);
         } catch (InterruptedException | ExecutionException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -41,10 +41,10 @@ public class ReservationController {
         }
     }
 
-    @DeleteMapping("/cancel/{roomId}")
-    public ResponseEntity<String> cancelReservation(@PathVariable String roomId) {
+    @DeleteMapping("/cancel/{id}")
+    public ResponseEntity<String> cancelReservation(@PathVariable String id) {
         try {
-            boolean canceled = reservationService.cancelReservation(roomId).get();
+            boolean canceled = reservationService.cancelReservation(id).get();
             if (canceled) {
                 return ResponseEntity.ok("Reserva cancelada exitosamente");
             } else {
@@ -57,9 +57,9 @@ public class ReservationController {
     }
 
     @GetMapping("/filter")
-    public ResponseEntity<List<Reservation>> filterReservationsByDate(@RequestParam LocalDateTime date) {
+    public ResponseEntity<List<ReservationDTO>> filterReservationsByDate(@RequestParam LocalDateTime date) {
         try {
-            List<Reservation> reservations = reservationService.filterReservationsByDate(date).get();
+            List<ReservationDTO> reservations = reservationService.filterReservationsByDate(date).get();
             return ResponseEntity.ok(reservations);
         } catch (InterruptedException | ExecutionException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
